@@ -159,10 +159,49 @@ public class Main {
             System.out.print("Enter choice: ");
             String choice = scanner.nextLine();
 
-            if (choice.equals("0")) {
-                break;
+            if (choice.equals("1")) {
+                showMonthToDateReport();
+            } else if (choice.equals("2")) {
+                showPreviousMonthReport();
+            } else if (choice.equals("0")) {
+                break; // Go back to ledger menu
             } else {
-                System.out.println("This report is under construction or not implemented yet.");
+                System.out.println("This report is not built yet.");
+            }
+        }
+    }
+
+    // Show transactions from this month only
+    static void showMonthToDateReport() {
+        System.out.println("\n===== Month to Date Report =====");
+
+        List<String> lines = new ArrayList<>();
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("Error reading transaction: " + e.getMessage());
+            return;
+        }
+
+        LocalDate today = LocalDate.now();
+        LocalDate firstOfMonth = today.withDayOfMonth(1);
+
+        for (String line : lines) {
+            String[] parts = line.split("\\|");
+            LocalDate transactionDate = LocalDate.parse(parts[0]);
+
+            if (!transactionDate.isBefore(firstOfMonth)) {
+                if (!transactionDate.isAfter(today)) {
+                    System.out.println(line);
+                }
             }
         }
     }
