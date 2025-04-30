@@ -205,5 +205,42 @@ public class Main {
             }
         }
     }
+
+    // Show transactions from the previous month
+    static void showPreviousMonthReport()  {
+        System.out.println("\n===== Previous Month Report =====");
+        List<String> lines = new ArrayList<>();
+
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(fileName));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            System.out.println("Error reading transactions: " + e.getMessage());
+            return;
+        }
+
+        LocalDate today = LocalDate.now();
+        LocalDate firstOfThisMonth = today.withDayOfMonth(1);
+        LocalDate firstOfLastMonth = firstOfThisMonth.minusMonths(1);
+        LocalDate endOfLastMonth = firstOfThisMonth.minusDays(1);
+
+        for (String line : lines) {
+            String[] parts = line.split("\\|");
+            LocalDate transactionDate = LocalDate.parse(parts[0]);
+
+            if (!transactionDate.isBefore(firstOfLastMonth)) {
+                if (!transactionDate.isAfter(endOfLastMonth)) {
+                    System.out.println(line);
+                }
+            }
+        }
+    }
+
 }
 
