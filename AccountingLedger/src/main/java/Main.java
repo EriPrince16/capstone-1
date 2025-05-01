@@ -163,6 +163,8 @@ public class Main {
                 showMonthToDateReport();
             } else if (choice.equals("2")) {
                 showPreviousMonthReport();
+            } else if (choice.equals("3")) {
+                showYearToDateReport();
             } else if (choice.equals("0")) {
                 break; // Go back to ledger menu
             } else {
@@ -238,6 +240,39 @@ public class Main {
                 if (!transactionDate.isAfter(endOfLastMonth)) {
                     System.out.println(line);
                 }
+            }
+        }
+    }
+
+    // Show all transactions from the beginning of the current year to today
+    static void showYearToDateReport() {
+        System.out.println("\n===== Year to Date Report =====");
+
+        List<String> lines = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading transactions: " + e.getMessage());
+            return;
+        }
+
+        // Get Jan 1st of the current year
+        LocalDate today = LocalDate.now();
+        LocalDate firstOfYear = today.withDayOfYear(1);
+
+        for (String line : lines) {
+            String [] parts = line.split("\\|");
+            if (parts.length != 5) continue;
+
+            LocalDate transactionDate = LocalDate.parse(parts[0]);
+
+            if (!transactionDate.isBefore(firstOfYear)) {
+                if (!transactionDate.isAfter(today))
+                    System.out.println(line);
             }
         }
     }
