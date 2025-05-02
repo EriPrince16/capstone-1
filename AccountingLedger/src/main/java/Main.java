@@ -1,5 +1,8 @@
 import java.io.FileReader;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 import java.io.BufferedReader;
@@ -165,6 +168,8 @@ public class Main {
                 showPreviousMonthReport();
             } else if (choice.equals("3")) {
                 showYearToDateReport();
+            } else if (choice.equals("4")) {
+                showPreviousYearReport();
             } else if (choice.equals("0")) {
                 break; // Go back to ledger menu
             } else {
@@ -194,17 +199,27 @@ public class Main {
         }
 
         LocalDate today = LocalDate.now();
-        LocalDate firstOfMonth = today.withDayOfMonth(1);
+        DateTimeFormatter formatMonth = DateTimeFormatter.ofPattern("MM"); // Format the way you want your month to be
+        String thisMonth = today.format(formatMonth); // Setting thisMonth to the current month
+        DateTimeFormatter formatYear = DateTimeFormatter.ofPattern("yyyy"); // Format the way you want your year to be
+        String thisYear = today.format(formatYear); // Setting thisMonth to the current year
+//        LocalDate firstOfMonth = today.withDayOfMonth(1);
 
         for (String line : lines) {
             String[] parts = line.split("\\|");
-            LocalDate transactionDate = LocalDate.parse(parts[0]);
+            String transactionDate = (parts[0]);
+            String[] dateParts = transactionDate.split("-");
+            String month = dateParts[1];
+            String year = dateParts[0];
 
-            if (!transactionDate.isBefore(firstOfMonth)) {
-                if (!transactionDate.isAfter(today)) {
-                    System.out.println(line);
-                }
+            if (thisMonth.equals(month) && thisYear.equals(year)) {
+                System.out.println(line);
             }
+//            if (!transactionDate.isBefore(firstOfMonth)) {
+//                if (!transactionDate.isAfter(today)) {
+//                    System.out.println(line);
+//                }
+//            }
         }
     }
 
@@ -273,6 +288,34 @@ public class Main {
             if (!transactionDate.isBefore(firstOfYear)) {
                 if (!transactionDate.isAfter(today))
                     System.out.println(line);
+            }
+        }
+    }
+
+    static void showPreviousYearReport () {
+        System.out.println("\n===== Previous Year Report =====");
+
+        List<String> lines = new ArrayList<>();
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading transactions: " + e.getMessage());
+            return;
+        }
+
+        int currentYear = LocalDate.now().getYear();
+        int previousYear = currentYear - 1;
+
+        for (String line : lines) {
+            String[] parts = line.split("\\|");
+            LocalDate transactionDate = LocalDate.parse(parts[0]);
+
+            if (transactionDate.getYear() == previousYear) {
+                System.out.println(line);
             }
         }
     }
