@@ -75,3 +75,6 @@ User Input with Scanner
 👤 Author
 Made with 💻 by [Million Bereket]
 
+![](/Users/1mill/Desktop/Screenshot 2025-05-02 at 9.04.25 AM.png)
+![](/Users/1mill/Desktop/Screenshot 2025-05-02 at 9.04.49 AM.png)
+![](/Users/1mill/Desktop/Screenshot 2025-05-02 at 9.05.08 AM.png)
